@@ -1,3 +1,4 @@
+#### About
 This is a proof of concept script that uses AES-CIV to encrypt a DynamoDB partition key. AES-CIV is an authenticated encryption algorithm with a synthetic IV. The ciphertext is deterministic, and the same nonce can be reused safely. With AES-SIV with a static nonce, the same plaintext is passed to AES-SIV the output will be the same, which is a desirable behavior. [Read more about the algorithm](https://connect2id.com/blog/deterministic-encryption-with-aes-siv)
 
 The script:
@@ -15,6 +16,17 @@ Wrote item with encrypted PK b'<redacted>', with plaintext 456-456-4567
 Read item with plaintext PK 123-123-1234, with decrypted plaintext PK 123-123-1234. Both should match.
 Read item with plaintext PK 456-456-4567, with decrypted plaintext PK 456-456-4567. Both should match.
 ```
+
+#### Why this matters
+If you use KMS En/Decrypt APIs, the ciphertext will change with each each operation. If you encrypt the string "1234", the ciphertext will change each time because the IV changes each time. This means the KMS encrypt/decrypt APIs can't be used to encrypt a DynamoDB partition key. AES-SIV is a standards-based way to have a static nonce, yielding the same ciphertext for a given plaintext.
+
+Benefits over other approaches:
+- Unlike a hash, AES-SIV is encrypted with AES using a data encryption key. You can't use a rainbow table to decrypt AES.
+- Unlike normal AES implementations, the IV is the same each time for a given plaintext which *I think* is the reason the ciphertext is the same.
+- Unlike a roll-your-own encryption approach, AES-SIV is documented and researched.
+
+This means that I can use something I know, which is a data encryption key, to encrypt a partition key that I can use to read and write a row while protecting the plaintext of the partition key.
+
 
 TL;DR: You can encrypt and your sensitive DynamoDB partition key with AES! You can work around the limitation of the [DynamoDB Encryption Client for Python](https://docs.aws.amazon.com/dynamodb-encryption-client/latest/devguide/python.html), which doesn't let you encrypt the partition key.
 
