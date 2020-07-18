@@ -6,6 +6,10 @@ The script:
 - Allocates a KMS DEK for the AES-SIV algorithm. It's stored in the DDB table in its own row. All rows in the table use the same DEK for the partition key in this sample code
 - Writes and then reads rows in the DDB table, proving the partition key ciphertext is the same by encrypting and then decrypting the partition key several times.
 
+#### How to run
+
+Simply install the modules in the requirements file and then run the python script. It can be run idempotently. It will create a table, create and store the DEK, and read/write the rows in order. If the table exists it continues, and if the DEK is already stored in the DDB table then it will read it and use it for operations. It's hard coded to operate in us-east-1, but that's selectable.
+
 Sample output:
 ```text
 % python3 kms_partition_key_encryption.py  

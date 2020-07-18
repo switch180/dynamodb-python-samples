@@ -136,7 +136,7 @@ def allocate_ddb_table():
         print(err)
 
 def allocate_kms_key():
-    #This isn't efficent in production, but it allows for simple reproducability in any AWS account
+    #This isn't efficient in production, but it allows for simple reproducability in any AWS account
     try:
         response = kms.describe_key(KeyId=key_alias)
         key_id = response['KeyMetadata']['KeyId']
