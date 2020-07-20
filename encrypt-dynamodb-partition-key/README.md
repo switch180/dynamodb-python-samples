@@ -1,5 +1,5 @@
 #### About
-This is a proof of concept script that uses AES-SIV to encrypt a DynamoDB partition key. AES-SIV is an authenticated encryption algorithm with a synthetic IV. The ciphertext is deterministic, and the same nonce can be reused safely. With AES-SIV with a static nonce, the same plaintext is passed to AES-SIV the output will be the same, which is a desirable behavior. [Read more about the algorithm](https://connect2id.com/blog/deterministic-encryption-with-aes-siv)
+This is a proof of concept script that uses AES-SIV to encrypt a DynamoDB partition key. AES-SIV is an authenticated encryption algorithm with a synthetic IV. The ciphertext is deterministic, and the same nonce can be reused safely. With AES-SIV with a static nonce, when the same plaintext is passed to AES-SIV then the output will be the same. This desirable behavior allows us to read and write DDB rows using the ciphertext as the partition key, unlike other encryption algorithms that have ciphertexts that change with each run. [Read more about the algorithm](https://connect2id.com/blog/deterministic-encryption-with-aes-siv)
 
 The script:
 - Creates a DDB table for the items
@@ -8,7 +8,7 @@ The script:
 
 #### How to run
 
-Simply install the modules in the requirements file and then run the python script. It can be run idempotently. It will create a table, create and store the DEK, and read/write the rows in order. If the table exists it continues, and if the DEK is already stored in the DDB table then it will read it and use it for operations. It's hard coded to operate in us-east-1, but that's selectable.
+Simply install the modules in the requirements file and then run the python script. It can be run idempotently. It will create a table, create and store the DEK, and read/write the rows in order. If the table exists it continues, and if the DEK is already stored in the DDB table then it will read it and use it for operations. It's coded to operate in us-east-1, but that's changeable.
 
 Sample output:
 ```text
@@ -22,7 +22,7 @@ Read item with plaintext PK 456-456-4567, with decrypted plaintext PK 456-456-45
 ```
 
 #### Why this matters
-If you use KMS En/Decrypt APIs, the ciphertext will change with each each operation. If you encrypt the string "1234", the ciphertext will change each time because the IV changes each time. This means the KMS encrypt/decrypt APIs can't be used to encrypt a DynamoDB partition key. AES-SIV is a standards-based way to have a static nonce, yielding the same ciphertext for a given plaintext.
+If you use KMS En/Decrypt APIs, the ciphertext will change with each each operation. If you encrypt the string "1234", the ciphertext will change each time because the IV changes with each API call. This means the KMS encrypt/decrypt APIs can't be used to encrypt a DynamoDB partition key. AES-SIV is a standards-based way to have a synthetic IV, yielding the same ciphertext for a given plaintext.
 
 Benefits over other approaches:
 - Unlike a hash, AES-SIV is encrypted with AES using a data encryption key. You can't use a rainbow table to decrypt AES.
