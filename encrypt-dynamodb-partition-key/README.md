@@ -1,5 +1,5 @@
 #### About
-This is a proof of concept script that uses AES-CIV to encrypt a DynamoDB partition key. AES-CIV is an authenticated encryption algorithm with a synthetic IV. The ciphertext is deterministic, and the same nonce can be reused safely. With AES-SIV with a static nonce, the same plaintext is passed to AES-SIV the output will be the same, which is a desirable behavior. [Read more about the algorithm](https://connect2id.com/blog/deterministic-encryption-with-aes-siv)
+This is a proof of concept script that uses AES-SIV to encrypt a DynamoDB partition key. AES-SIV is an authenticated encryption algorithm with a synthetic IV. The ciphertext is deterministic, and the same nonce can be reused safely. With AES-SIV with a static nonce, the same plaintext is passed to AES-SIV the output will be the same, which is a desirable behavior. [Read more about the algorithm](https://connect2id.com/blog/deterministic-encryption-with-aes-siv)
 
 The script:
 - Creates a DDB table for the items
@@ -14,7 +14,7 @@ Sample output:
 ```text
 % python3 kms_partition_key_encryption.py  
 Making the DDB table in case it doesn't exist.
-An error occurred (ResourceInUseException) when calling the CreateTable operation: Table already exists: aes-civ-ddb-kms-test
+An error occurred (ResourceInUseException) when calling the CreateTable operation: Table already exists: aes-siv-ddb-kms-test
 Wrote item with encrypted PK b'<redacted>', with plaintext 123-123-1234
 Wrote item with encrypted PK b'<redacted>', with plaintext 456-456-4567
 Read item with plaintext PK 123-123-1234, with decrypted plaintext PK 123-123-1234. Both should match.
@@ -37,4 +37,5 @@ TL;DR: You can encrypt and your sensitive DynamoDB partition key with AES! You c
 #### Resources
 - [Inspired by this stackexchange post titled "Deterministic Encryption using AES"](https://crypto.stackexchange.com/questions/68032/deterministic-encryption-using-aes)
 - [Miscreant AES-SIV library documentation](https://github.com/miscreant/miscreant.py#api).
-- [AES-CIV RFC 5297](https://tools.ietf.org/html/rfc5297)
+- [AES-
+RFC 5297](https://tools.ietf.org/html/rfc5297)
