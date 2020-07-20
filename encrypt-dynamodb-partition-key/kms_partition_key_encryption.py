@@ -4,7 +4,7 @@ from miscreant.aes.siv import SIV
 
 
 region_name = 'us-east-1'
-test_name = 'aes-civ-ddb-kms-test'
+test_name = 'aes-siv-ddb-kms-test'
 ddb_table_name = test_name
 key_alias = 'alias/' + test_name
 valid_partition_keys = ['123-123-1234', '456-456-4567']
@@ -144,7 +144,7 @@ def allocate_kms_key():
     except Exception as err:
         if err.response['Error']['Code'] == 'NotFoundException':
             response = kms.create_key(
-                Description='Created to test KMS encrypt/decrypt for AES-CIV',
+                Description='Created to test KMS encrypt/decrypt for AES-SIV',
                 KeyUsage='ENCRYPT_DECRYPT',
                 CustomerMasterKeySpec='SYMMETRIC_DEFAULT',
                 Origin='AWS_KMS'
