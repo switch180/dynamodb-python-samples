@@ -11,20 +11,15 @@ from base64 import b64encode
 
 
 
-#aws dynamodb create-table --attribute-definitions AttributeName="_id",AttributeType=S --table-name plain-v1 --key-schema AttributeName="_id",KeyType=HASH --billing-mode PAY_PER_REQUEST
+#aws dynamodb create-table --attribute-definitions AttributeName="_id",AttributeType=S --table-name TABLENAME-v1 --key-schema AttributeName="_id",KeyType=HASH --billing-mode PAY_PER_REQUEST
 compression_choices = ['gzip']
 input_file = 'item.json' #Should be a JSON document, with one element with PK named '_id' of type String, where we will swap in the partition key value
-logging.getLogger().setLevel(10)
+logging.getLogger().setLevel(20)
 logger = logging.getLogger('item-size')
 log = logging.StreamHandler()
 logger.addHandler(log)
 
-#Print it all
-logging.getLogger('urllib3').setLevel(logging.DEBUG)
-logging.getLogger('boto3').setLevel(logging.DEBUG)
-logging.getLogger('botocore').setLevel(logging.DEBUG)
-loggers_dict = logging.Logger.manager.loggerDict
-#print(loggers_dict)
+
 def main():
     pass
     #Collect args
